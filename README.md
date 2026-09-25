@@ -4,7 +4,7 @@ A polished, interactive HealthTech prototype that combines simulated phone/weara
 
 **This is a demo/prototype. It is not a medical device and does not diagnose anything.**
 
-🔗 Live demo: https://obitorinai.github.io/Smart_heathcare/
+🔗 Live demo: https://obitorinai.github.io/ayu_sheld/
 
 ---
 
