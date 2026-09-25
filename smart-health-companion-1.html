@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smart Health Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ffffff;--sf:#fff;--tx:#0e1a3b;--mu:#5f6c8a;--pr:#2456f5;--pl:#edf2ff;--gn:#12905a;--am:#c77700;--rd:#cf2f2f;--bd:#e6ecf8;--ink:#0e1a3b;--lime:#dff26a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="dark"]{--bg:#0b1226;--sf:#141d38;--tx:#eaf0ff;--mu:#93a1c4;--pr:#6f93ff;--pl:#1f2c57;--gn:#3ccf8a;--am:#f0a83a;--rd:#ff6b6b;--bd:#243156;--ink:#050a18}
+*{box-sizing:border-box}html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--tx);font:15px/1.45 Manrope,system-ui,-apple-system,Segoe UI,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--pr);outline-offset:2px}
+#app{display:flex;min-height:100vh}
+aside{display:none;width:230px;padding:24px 16px;background:var(--sf);border-right:1px solid var(--bd);position:sticky;top:0;height:100vh;flex-direction:column;gap:6px}
+aside h1{font-size:15px;line-height:1.2;margin:0 8px 18px;font-weight:800}
+.nb{display:flex;align-items:center;gap:10px;padding:11px 14px;border:0;border-radius:14px;background:none;text-align:left;font-weight:600;color:var(--mu)}
+.nb.on{background:var(--ink);color:#fff}
+main{flex:1;min-width:0;padding:16px 16px 100px;max-width:1200px;margin:0 auto;width:100%}
+nav.bt{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--sf);border-top:1px solid var(--bd);padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));z-index:5}
+nav.bt button{flex:1;border:0;background:none;padding:8px 2px;border-radius:14px;font-size:12px;font-weight:600;color:var(--mu);display:flex;flex-direction:column;align-items:center;gap:2px}
+nav.bt button.on{background:var(--ink);color:#fff}
+@media(min-width:900px){aside{display:flex}nav.bt{display:none}main{padding:28px 32px 60px}}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
+h2{margin:0;font-size:22px;font-weight:800}h3{margin:0 0 8px;font-size:16px;font-weight:800}.mu{color:var(--mu);font-size:13px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;background:var(--pl);color:var(--pr);font-size:12px;font-weight:800}
+.ib{width:42px;height:42px;border-radius:14px;border:1px solid var(--bd);background:var(--sf);position:relative;font-size:18px}
+.ib i{position:absolute;top:-4px;right:-4px;background:var(--rd);color:#fff;border-radius:99px;font-size:11px;font-style:normal;min-width:18px;height:18px;line-height:18px;text-align:center}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(2,1fr)}
+@media(min-width:900px){.dash{grid-template-columns:repeat(12,1fr)}.c7{grid-column:span 7}.c5{grid-column:span 5}.c12{grid-column:span 12}.g3d{grid-template-columns:repeat(3,1fr)}.two{grid-template-columns:1.3fr 1fr}}
+.card{background:var(--sf);border-radius:24px;padding:18px;box-shadow:0 6px 24px rgba(30,50,110,.08);border:1px solid var(--bd)}
+.dk{background:var(--ink);color:#fff;border-color:transparent}.dk .mu{color:#b4c0e0}
+.big{font-size:34px;font-weight:800;line-height:1.1}.big small{font-size:14px;font-weight:600;color:var(--mu)}
+.mc{text-align:left;width:100%;transition:transform .15s,box-shadow .15s}.mc:hover{transform:translateY(-2px)}
+.sev{font-weight:800;font-size:13px}.s-low{color:var(--gn)}.s-caution{color:var(--am)}.s-elevated{color:var(--rd)}.s-na{color:var(--mu)}
+.btn{border:0;border-radius:14px;padding:11px 16px;font-weight:800;background:var(--pr);color:#fff}
+.btn.sec{background:var(--pl);color:var(--pr)}.btn.gh{background:none;color:var(--pr);padding:8px 4px}.btn.dg{background:var(--rd)}.btn.wh{background:#fff;color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{justify-content:space-between}
+.chip{padding:5px 10px;border-radius:99px;background:var(--pl);font-size:12px;font-weight:600}.dk .chip{background:#22305c;color:#fff}
+.tabs{display:flex;gap:6px;background:var(--pl);padding:4px;border-radius:14px}.tabs button{flex:1;border:0;background:none;padding:8px;border-radius:10px;font-weight:700;color:var(--mu)}.tabs button.on{background:var(--sf);color:var(--tx)}
+svg.ch{width:100%;height:auto;display:block;touch-action:none}
+.ln{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1200;stroke-dashoffset:1200;animation:dr 1s ease forwards}@keyframes dr{to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){.ln{animation:none;stroke-dashoffset:0}*{transition:none!important}}
+.sk{background:linear-gradient(90deg,var(--pl),var(--bd),var(--pl));background-size:200% 100%;animation:sh 1.1s infinite;border-radius:10px;height:14px;margin:8px 0}@keyframes sh{to{background-position:-200% 0}}
+.ov{position:fixed;inset:0;background:rgba(5,10,24,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:560px;max-height:90vh;overflow:auto;border-radius:28px 28px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom,0px))}
+@media(min-width:900px){.ov{align-items:center}.sheet{border-radius:28px}}
+.tg{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bd)}
+.sw{width:50px;height:30px;border-radius:99px;border:0;background:var(--bd);position:relative;flex:none}.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .15s}.sw[aria-checked=true]{background:var(--gn)}.sw[aria-checked=true]::after{left:23px}
+label{display:block;font-weight:700;font-size:13px;margin:10px 0 4px;color:#3d3f9e}input,select{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--sf);color:#0e1a3b;font:inherit}.er{color:var(--rd);font-size:12px;min-height:16px}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:14px;z-index:30;font-weight:600;max-width:90vw}
+#dbtn{position:fixed;right:14px;bottom:88px;z-index:6;background:var(--lime);color:#111;border:0;border-radius:99px;padding:10px 14px;font-weight:800;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+@media(min-width:900px){#dbtn{bottom:24px}}
+.map{border-radius:20px;overflow:hidden;background:#dce8f7;border:1px solid var(--bd)}
+.mk{cursor:pointer}.mk:focus-visible circle{stroke:var(--pr);stroke-width:3}
+.flow{display:flex;gap:6px;flex-wrap:wrap;font-size:12px;font-weight:700}.flow span{padding:4px 8px;border-radius:8px;background:#22305c;color:#9fb0e0}.flow span.on{background:var(--lime);color:#111}
+.ring{transform:rotate(-90deg);transform-origin:50% 50%}
+
+h2,.big{font-family:Fraunces,Georgia,serif;font-weight:700;letter-spacing:-.01em}
+.bloom{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.bloom i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.6;animation:fl 20s ease-in-out infinite alternate}
+.bloom i:nth-child(1){width:380px;height:380px;background:#ffd9ea;top:-110px;left:-90px}
+.bloom i:nth-child(2){width:430px;height:430px;background:#d6e4ff;top:32%;right:-130px;animation-delay:-7s}
+.bloom i:nth-child(3){width:340px;height:340px;background:#e8dcff;bottom:-100px;left:18%;animation-delay:-12s}
+@keyframes fl{to{transform:translate(30px,40px) scale(1.08)}}
+.card{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.97),rgba(243,248,255,.86));backdrop-filter:blur(10px);border-radius:28px;border:1px solid rgba(255,255,255,.95);box-shadow:0 12px 34px rgba(60,80,160,.10),inset 0 1px 0 #fff}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.8) 0%,rgba(255,255,255,0) 36%)}
+.card>*{position:relative}
+.dk{background:linear-gradient(135deg,#0e1a3b,#25479f 70%,#4a78ff);color:#fff}.dk::before{background:linear-gradient(115deg,rgba(255,255,255,.24),rgba(255,255,255,0) 42%)}
+.btn{background:linear-gradient(180deg,#4d7dff,#2456f5);box-shadow:0 6px 16px rgba(36,86,245,.28),inset 0 1px 0 rgba(255,255,255,.5);border-radius:99px}
+.btn.sec{background:var(--pl);box-shadow:none}.btn.wh{background:#fff;box-shadow:none}.btn.gh{background:none;box-shadow:none}.btn.dg{background:var(--rd)}
+.ib{border-radius:50%}.tabs,.chip,.pill{border-radius:99px}.tabs button{border-radius:99px}
+.av{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#ffb8d6,#7aa2ff);display:grid;place-items:center;color:#fff;font-weight:800;font-size:21px;flex:none;box-shadow:inset 0 2px 0 rgba(255,255,255,.5)}
+.ob{min-height:100vh;display:grid;gap:22px;padding:20px 4px;max-width:1000px;margin:auto;align-items:center}
+@media(min-width:900px){.ob{grid-template-columns:1.1fr .9fr}}
+.prog{display:flex;gap:6px;margin:8px 0 18px}.prog i{flex:1;height:7px;border-radius:9px;background:var(--pl)}.prog i.on{background:linear-gradient(90deg,#7aa2ff,#2456f5)}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.fa{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 24px));z-index:15;animation:sd .5s cubic-bezier(.2,.9,.3,1.2);border-color:#ffd0d0}
+@keyframes sd{from{opacity:0;top:-120px}}
+.list{max-height:340px;overflow:auto}.map svg{min-height:340px}
+body.onb aside,body.onb nav.bt,body.onb #dbtn{display:none!important}
+.bar{height:10px;border-radius:9px;background:var(--pl);overflow:hidden}.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#7aa2ff,#2456f5)}
+</style></head>
+<body><div class="bloom" aria-hidden="true"><i></i><i></i><i></i></div><div id="fa" aria-live="polite"></div><div id="app"><aside id="side"></aside><main id="main"></main></div>
+<nav class="bt" id="bt" aria-label="Main"></nav><button id="dbtn" onclick="demoOpen()" aria-label="Open demo control">🎛 Demo control</button>
+<script>
+const B={rhr:70,sleep:460,hyd:1800,st:6500};
+const SC={
+normal:{n:'Normal Day',i:'🟢',h:{hr:76,rhr:70,spo2:98,t:36.7,st:6240,act:'Normal',sl:460,hy:1800},e:{t:27,fl:28,hu:55,w:12,uv:'Moderate',wx:'Partly cloudy',aqi:54,pm:14,ex:1},time:'—',hl:null},
+heat:{n:'Heat Stress',i:'🟠',h:{hr:112,rhr:78,spo2:96,t:37.6,st:9800,act:'High',sl:440,hy:900},e:{t:36,fl:41,hu:78,w:6,uv:'High',wx:'Hot and humid',aqi:95,pm:30,ex:3.5},time:'3:42 PM',hl:'hospital'},
+pollution:{n:'High Pollution',i:'🔴',h:{hr:80,rhr:71,spo2:97,t:36.7,st:7400,act:'High',sl:450,hy:1700},e:{t:30,fl:32,hu:60,w:4,uv:'Moderate',wx:'Hazy',aqi:175,pm:92,ex:3},time:'11:20 AM',hl:'pharmacy'},
+sleep:{n:'Poor Sleep / Recovery',i:'🔵',h:{hr:84,rhr:79,spo2:97,t:36.8,st:7800,act:'Moderate',sl:292,hy:1500},e:{t:28,fl:29,hu:58,w:10,uv:'Moderate',wx:'Clear',aqi:62,pm:17,ex:1.5},time:'8:05 AM',hl:null}};
+const RT={none:['Looking Stable','Your recent health signals appear consistent with your usual pattern.','No action needed. Keep up regular hydration.'],
+heat:['Possible Heat-Stress Risk','Your current activity and environmental conditions may increase heat-stress risk.','Consider moving to a cooler environment and taking a hydration break.'],
+air:['Elevated Environmental Exposure','Current air-quality conditions are unfavorable for prolonged outdoor exposure.','Consider reducing prolonged outdoor exposure while air quality remains poor.'],
+rec:['Possible Recovery Concern','Your recent sleep duration is below your usual pattern. Your activity and recovery signals may indicate less recovery time than usual.','Consider a lighter day and an earlier bedtime tonight.']};
+const PLd=[['hospital','City General Hospital',110,-110],['hospital','Riverside Medical Centre',-130,60],['hospital','St. Mary Hospital',210,120],['hospital','Northside Hospital',-20,-200],['hospital','Lakeview Hospital',-200,-120],['hospital','Sunrise Children\u2019s Hospital',190,-190],['hospital','Metro Heart Institute',60,190],['hospital','Central Trauma Centre',-40,-60],['hospital','Greenfield Community Hospital',-230,150],
+['pharmacy','GreenCross Pharmacy',60,40],['pharmacy','CityCare Pharmacy',-100,-90],['pharmacy','Wellness Plus Pharmacy',160,20],['pharmacy','MediPoint 24h',-150,10],['pharmacy','HealthFirst Pharmacy',90,-150],['pharmacy','Riverside Chemist',-20,150],
+['emergency','Emergency Response Point',120,100],['emergency','Fire & Rescue Station',-120,-190],['emergency','Ambulance Hub East',240,-30],['emergency','Ambulance Hub West',-250,30]];
+const PL=PLd.map(a=>({t:a[0],n:a[1],x:320+a[2],y:300+a[3],d:Math.round(Math.hypot(a[2],a[3])*.011*10)/10}));
+const ICO={hospital:'🏥',pharmacy:'💊',emergency:'🚑'};
+let S={sc:'normal',page:'dash',cur:null,busy:false,sim:null,range:0,mf:{hospital:1,pharmacy:1,emergency:1},sel:null,z:1,dis:{},fdis:{},faK:null,wear:false,onb:0,
+prof:{name:'',age:'',sex:'',city:'',work:'Mixed',height:'',weight:'',act:'Moderate',sleepH:'7.5',ec:'',ep:'',done:false},
+set:{health:1,loc:1,notif:1,ai:1,hist:0}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const bmi=()=>{const h=+S.prof.height/100,w=+S.prof.weight;return h>0&&w>0?w/(h*h):0};
+const bmiC=b=>!b?'—':b<18.5?'below usual range':b<25?'within usual range':b<30?'above usual range':'well above usual range';
+const hydGoal=()=>Math.min(3500,Math.max(1500,Math.round(+S.prof.weight*33/100)*100||2000));
+const stGoal=()=>({Low:5000,Moderate:8000,High:10000})[S.prof.act]||8000;
+function applyProf(){B.sleep=Math.round((+S.prof.sleepH||7.7)*60);B.st=({Low:4500,Moderate:6500,High:9000})[S.prof.act]||6500}
+const nearest=(n,t)=>PL.filter(p=>!t||p.t===t).sort((a,b)=>a.d-b.d).slice(0,n);
+const ring=(p,c,l,v)=>`<div style="text-align:center"><svg viewBox="0 0 64 64" width="76" role="img" aria-label="${l} ${Math.round(p*100)}%"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--pl)" stroke-width="7"/><circle class="ring" cx="32" cy="32" r="26" fill="none" stroke="${c}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${Math.min(1,p)*163.4} 163.4"/><text x="32" y="36" text-anchor="middle" font-size="13" font-weight="800" fill="currentColor">${Math.round(p*100)}%</text></svg><div style="font-weight:700;font-size:13px">${l}</div><div class="mu">${v}</div></div>`;
+const load=id=>{S.sc=id;S.cur={h:{...SC[id].h},e:{...SC[id].e}}};load('normal');applyProf();
+const $=s=>document.querySelector(s),fm=m=>`${Math.floor(m/60)}h ${String(Math.round(m%60)).padStart(2,'0')}m`;
+const SEV={low:['🟢','Low'],caution:['🟠','Moderate'],elevated:['🔴','Elevated']};
+const sv=k=>`<span class="sev s-${k}">${SEV[k][0]} ${SEV[k][1]}</span>`;
+
+/* ---------- prototype risk engine (not clinically validated) ---------- */
+function risk(){const{h,e}=S.cur,W={heat:[],air:[],rec:[]},F={heat:[],air:[],rec:[]},s={heat:0,air:0,rec:0};
+const a=(k,p,f,l,d)=>{s[k]+=p;if(f)F[k].push(f);W[k].push([l,d])};
+if(e.fl>=38||e.t>=34)a('heat',2,'high environmental temperature','High environmental temperature',`It feels like ${e.fl}°C outside.`);
+if(e.hu>=70)a('heat',1,0,'High humidity',`Humidity is ${e.hu}%, which makes it harder to shed heat.`);
+if(h.act==='High')a('heat',1,'elevated activity','Elevated activity',`${h.st.toLocaleString()} steps, above your usual ${B.st.toLocaleString()}.`);
+if(h.hr>=B.rhr+30)a('heat',1,'increased heart rate','Increased heart rate',`${Math.round(h.hr)} BPM is well above your recent baseline of ${B.rhr} BPM.`);
+if(h.hy<B.hyd*.6)a('heat',1,'reduced hydration','Reduced hydration',`${(h.hy/1000).toFixed(1)} L logged vs your usual ${(B.hyd/1000).toFixed(1)} L.`);
+if(h.t>=37.5)a('heat',1,0,'Warmer body-temperature reading',`${h.t}°C is above your typical range.`);
+if(e.aqi>=150)a('air',3,'elevated AQI','Unfavorable air quality',`AQI is ${e.aqi}.`);else if(e.aqi>=101)a('air',2,'elevated AQI','Moderately unhealthy air',`AQI is ${e.aqi}.`);
+if(e.pm>=55)a('air',1,'elevated PM2.5','Elevated PM2.5',`${e.pm} µg/m³ fine particles.`);
+if(s.air&&h.act==='High')a('air',1,'high outdoor activity','High outdoor activity','Being active outdoors increases how much air you breathe in.');
+if(s.air&&e.ex>=2)a('air',1,'prolonged exposure','Prolonged exposure',`About ${e.ex} h outdoors today.`);
+const df=B.sleep-h.sl;if(df>=120)a('rec',2,'sleep well below usual','Shorter sleep',`${fm(h.sl)} vs usual ${fm(B.sleep)} (-${fm(df)}).`);else if(df>=60)a('rec',1,'sleep below usual','Shorter sleep',`${fm(h.sl)} vs usual ${fm(B.sleep)}.`);
+if(h.rhr-B.rhr>=6)a('rec',1,'resting heart rate above baseline','Higher resting heart rate',`Your current reading (${h.rhr} BPM) is higher than your recent baseline (${B.rhr} BPM).`);
+if(s.rec&&h.act!=='Normal'&&h.act!=='Low')a('rec',1,'ongoing activity','Ongoing activity','Activity stayed up despite less recovery time.');
+const sev={heat:s.heat>=7&&(h.t>=38.5||h.spo2<94)?'elevated':s.heat>=3?'caution':'low',air:s.air>=4?'elevated':s.air>=2?'caution':'low',rec:s.rec>=3?'caution':'low'};
+const rk={low:0,caution:1,elevated:2},top=['heat','air','rec'].sort((x,y)=>rk[sev[y]]-rk[sev[x]]||s[y]-s[x])[0];
+const t=sev[top]==='low'?'none':top,unusual=h.spo2<94||h.rhr-B.rhr>=15;
+return{t,sev:t==='none'?'low':sev[top],conf:t==='none'?.9:Math.min(.95,.5+.05*s[top]),f:t==='none'?[]:F[top],why:t==='none'?[]:W[top],title:RT[t][0],ai:RT[t][1],pre:RT[t][2],
+ind:[['❤️','Health pattern',unusual?'caution':'low',unusual?'Unusual pattern':'No unusual pattern'],['🌡','Heat stress',sev.heat,SEV[sev.heat][1]],['🌫','Environmental exposure',sev.air,SEV[sev.air][1]],['😴','Recovery / sleep',sev.rec,sev.rec==='low'?'On track':'Needs attention'],['🌊','Flood / disaster','na','No live disaster data connected']]}}
+
+/* ---------- synthetic history (deterministic) ---------- */
+function gen(n,b,a,nz,seed,rise=0){let s=seed;const r=()=>((s=(s*1664525+1013904223)>>>0)/4294967296);return Array.from({length:n},(_,i)=>b+Math.sin(i/n*6.28)*a+rise*i/(n-1)+(r()-.5)*2*nz)}
+function M(){const{h,e}=S.cur,d=B.sleep-h.sl;return{
+hr:{l:'Heart rate',i:'❤️',v:h.hr,u:'BPM',us:h.rhr+6,a:5,nz:3,dp:0,st:h.hr>=100?'Elevated':'Normal',f:v=>Math.round(v)},
+spo2:{l:'SpO₂',i:'🫁',v:h.spo2,u:'%',us:98,a:.4,nz:.5,dp:0,st:h.spo2<95?'Below usual':'Normal',f:v=>Math.min(100,Math.round(v))},
+temp:{l:'Body temperature',i:'🌡',v:h.t,u:'°C',us:36.7,a:.12,nz:.08,dp:0,st:h.t>=37.5?'Elevated':'Normal',f:v=>v.toFixed(1)},
+steps:{l:'Activity',i:'🚶',v:h.st,u:'steps',us:6500,a:800,nz:700,dy:1,st:h.act,f:v=>Math.round(v).toLocaleString()},
+sleep:{l:'Sleep',i:'😴',v:h.sl/60,u:'',us:7.7,a:.3,nz:.3,dy:1,st:d>=60?'Below usual':'On track',f:v=>fm(v*60)},
+hyd:{l:'Hydration (logged)',i:'💧',v:h.hy/1000,u:'L',us:1.8,a:.15,nz:.2,dy:1,st:h.hy<1080?'Low':'On track',f:v=>v.toFixed(1)}}}
+function series(k,ri){const m=M()[k],n=m.dy?[7,14,30][ri]:[24,28,30][ri];const ex=!m.dy&&ri===0?(m.v-m.us):0;const s=gen(n,m.us,m.a,m.nz,k.length*7+ri*13+3,ex);s[n-1]=m.v;return s}
+function line(d,c,w=320,h=130){const mn=Math.min(...d),mx=Math.max(...d),p=8,X=i=>p+i*(w-2*p)/(d.length-1),Y=v=>h-p-(v-mn)/((mx-mn)||1)*(h-2*p);const pts=d.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`);
+return`<svg class="ch" viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="M${pts.join('L')}L${X(d.length-1)},${h}L${p},${h}Z" fill="${c}" opacity=".12"/><path class="ln" d="M${pts.join('L')}" stroke="${c}"/><circle cx="${X(d.length-1)}" cy="${Y(d[d.length-1])}" r="4.5" fill="${c}"/></svg>`}
+const spark=(d,c)=>`<svg viewBox="0 0 100 28" width="100%" height="28" aria-hidden="true" preserveAspectRatio="none">${(()=>{const mn=Math.min(...d),mx=Math.max(...d);return`<polyline fill="none" stroke="${c}" stroke-width="2" points="${d.map((v,i)=>`${i*100/(d.length-1)},${26-(v-mn)/((mx-mn)||1)*24}`).join(' ')}"/>`})()}</svg>`;
+const col={low:'var(--gn)',caution:'var(--am)',elevated:'var(--rd)'};
+
+/* ---------- alerts ---------- */
+const HIST=[{k:'h1',title:'High environmental exposure',time:'Yesterday, 7:18 PM',sev:'caution',status:'resolved',why:'AQI was elevated during an evening outdoor walk (demo history).',pre:'Reduce prolonged outdoor exposure when air quality is poor.'},{k:'h2',title:'Recovery: sleep below usual',time:'3 days ago, 8:10 AM',sev:'caution',status:'resolved',why:'Sleep was about 1h 30m under your usual pattern (demo history).',pre:'Consider an earlier bedtime.'}];
+function alerts(){const r=risk(),l=[];if(r.t!=='none'){const k=r.t+S.sc;l.push({k,title:r.title,time:S.sim?'Just now':SC[S.sc].time,sev:r.sev,status:S.dis[k]?'dismissed':'active',why:r.f.join(' + '),pre:r.pre,live:1})}return l.concat(HIST)}
+const active=()=>alerts().filter(a=>a.status==='active').length;
+
+/* ---------- UI helpers ---------- */
+function toast(m){let t=$('#toast');if(t)t.remove();t=document.createElement('div');t.id='toast';t.setAttribute('role','status');t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),2200)}
+function sheet(html){closeS();const o=document.createElement('div');o.className='ov';o.id='ov';o.onclick=e=>{if(e.target===o)closeS()};o.innerHTML=`<div class="sheet" role="dialog" aria-modal="true">${html}</div>`;document.body.append(o);const b=o.querySelector('button');b&&b.focus()}
+const closeS=()=>{const o=$('#ov');o&&o.remove()};
+addEventListener('keydown',e=>{if(e.key==='Escape')closeS()});
+const x=`<button class="btn gh" onclick="closeS()" aria-label="Close">✕ Close</button>`;
+function go(p){S.page=p;S.sel=null;render();scrollTo(0,0)}
+const NAV=[['dash','🏠','Dashboard','Home'],['env','🌍','Environment','Environment'],['risk','🚨','Alerts / Risk','Risk'],['prof','👤','Profile','Profile']];
+
+/* ---------- pages ---------- */
+function score(){const r=risk(),h=S.cur.h;return Math.round(Math.max(38,Math.min(99,97-({low:0,caution:18,elevated:36})[r.sev]-Math.max(0,(B.sleep-h.sl)/60*3)-(h.hy<B.hyd*.6?6:0))))}
+const TIPS={none:['Take a short walk after lunch','Sip water regularly through the day','Wind down 30 minutes before bed'],heat:['Move to shade or a cooler room','Drink water in small sips','Pause strenuous activity for now'],air:['Keep windows closed if you can','Choose indoor activity today','Consider a mask outdoors'],rec:['Keep today light','Limit caffeine after noon','Aim for an earlier bedtime']};
+function pDash(){const r=risk(),m=M(),{e,h}=S.cur,p=S.prof,ac=active(),sc=score(),ml=220-(+p.age||30),b=bmi(),nm=esc(p.name);
+const cards=Object.keys(m).map(k=>{const q=m[k],dev=(q.v-q.us)/q.us,tr=Math.abs(dev)<.04?'→ steady':dev>0?'↗ above usual':'↘ below usual';
+return`<button class="card mc" onclick="detail('${k}')" aria-label="${q.l} details"><div class="row sp"><span class="mu">${q.i} ${q.l}</span><span class="mu">${q.st}</span></div><div class="big">${q.f(q.v)} <small>${q.u}</small></div>${spark(series(k,0).slice(-12),'var(--pr)')}<div class="mu">${tr} · Updated just now</div></button>`}).join('');
+const ai=S.busy?`<div class="sk" style="width:80%"></div><div class="sk"></div><div class="sk" style="width:60%"></div><div class="mu">Analyzing health signals…</div>`:
+`<div style="font-size:18px;font-weight:800;margin-bottom:6px">${r.t==='none'?'Your current health signals look stable.':'⚠️ '+r.title}</div><p style="margin:0 0 10px">${r.ai}</p>
+<div class="row" style="margin-bottom:10px">${r.t==='none'?`<span class="chip">❤️ Heart rate — Normal</span><span class="chip">🫁 SpO₂ — Normal</span><span class="chip">🌡 Temp — Normal</span><span class="chip">🚶 Activity — ${h.act}</span>`:r.f.map(f=>`<span class="chip">• ${f}</span>`).join('')}</div>
+<p class="mu" style="margin:0 0 12px">💡 ${r.pre}</p><div class="row">${r.t!=='none'?`<button class="btn" onclick="why()">Why am I seeing this?</button>`:''}<button class="btn sec" onclick="why()">View analysis →</button></div><div class="mu" style="margin-top:8px">Generated from local prototype rules · not a diagnosis</div>`;
+const sim=S.sim?`<div class="card dk c12" style="grid-column:1/-1"><div class="mu">Timeline simulation · demo</div><div style="font-weight:800;margin:4px 0 8px">${S.sim.l}</div><div class="flow">${['Data','Analysis','Risk detection','AI explanation','Alert'].map((z,i)=>`<span class="${i<=S.sim.p?'on':''}">${z}</span>`).join('')}</div></div>`:'';
+const wk=series('steps',0),mx=Math.max(...wk,stGoal()),dn=['S','M','T','W','T','F','S'],td=new Date().getDay();
+const bars=wk.map((v,i)=>{const hh=v/mx*80;return`<rect x="${i*40+12}" y="${95-hh}" width="24" height="${hh}" rx="12" fill="url(#bg)"/><text x="${i*40+24}" y="112" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">${dn[(td-6+i+7)%7]}</text>`}).join('');
+const fc=[0,1,1,2,1].map((o,i)=>`<div style="text-align:center"><div class="mu">${i?'+'+i+'h':'Now'}</div><b>${e.t+o}°</b></div>`).join('');
+return`<div class="top"><div><h2>Good morning, ${nm} 👋</h2><div class="mu">Your health overview · ${new Date().toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'})}</div></div><div class="row"><span class="pill">DEMO MODE</span><button class="ib" onclick="go('risk')" aria-label="${ac} active alerts">🔔${ac?`<i>${ac}</i>`:''}</button></div></div>
+<div class="grid dash">${sim}
+<div class="card dk c7"><div class="row sp" style="flex-wrap:nowrap"><div><div class="mu">🧠 Health status</div><div class="big" style="margin:6px 0;font-size:30px">${r.title}</div><p style="margin:0 0 12px" class="mu">Based on your recent health signals and current environment.</p><span style="background:#fff;color:#0e1a3b;padding:4px 10px;border-radius:99px">${sv(r.sev)}</span></div>
+<div style="text-align:center;flex:none"><svg viewBox="0 0 64 64" width="92" role="img" aria-label="Wellness score ${sc}"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="7"/><circle class="ring" cx="32" cy="32" r="26" fill="none" stroke="#dff26a" stroke-width="7" stroke-linecap="round" stroke-dasharray="${sc/100*163.4} 163.4"/><text x="32" y="38" text-anchor="middle" font-size="18" font-weight="800" fill="#fff">${sc}</text></svg><div class="mu">Wellness score</div></div></div>
+<div class="row" style="margin-top:14px"><button class="btn wh" onclick="why()">View health analysis</button></div>
+<svg viewBox="0 0 400 40" preserveAspectRatio="none" width="100%" height="34" style="position:absolute;left:0;bottom:0" aria-hidden="true"><path d="M0 22 C80 0 140 40 220 20 S340 6 400 24 V40 H0Z" fill="rgba(255,255,255,.08)"/></svg></div>
+<div class="card c5"><div class="row" style="flex-wrap:nowrap"><div class="av">${esc((p.name||'?')[0].toUpperCase())}</div><div><h3 style="margin:0">${nm}</h3><div class="mu">${esc(p.age)} yrs · ${esc(p.sex)} · ${esc(p.city)}</div></div><button class="btn sec" style="margin-left:auto" onclick="go('prof')">Edit</button></div>
+<div class="row" style="margin:12px 0"><span class="chip">📏 ${esc(p.height)} cm</span><span class="chip">⚖️ ${esc(p.weight)} kg</span><span class="chip">BMI ${b?b.toFixed(1):'—'}</span><span class="chip">😴 ${p.sleepH} h goal</span><span class="chip">🏃 ${p.act}</span><span class="chip">💼 ${esc(p.work)}</span></div>
+<div class="mu">Heart rate at ${Math.round(h.hr/ml*100)}% of estimated max (${ml} BPM)</div><div class="bar"><i style="width:${Math.min(100,h.hr/ml*100)}%"></i></div><div class="mu" style="margin-top:4px">Estimated from age (220 − age). Not a medical measure.</div></div>
+<div class="grid g2 g3d c12">${cards}</div>
+<div class="card c7"><h3>🧠 AI health insight</h3>${ai}</div>
+<div class="card c5"><h3>Today’s goals</h3><div class="row sp" style="flex-wrap:nowrap">${ring(h.st/stGoal(),'#2456f5','Steps',h.st.toLocaleString())}${ring(h.hy/hydGoal(),'#12a3c7','Water',(h.hy/1000).toFixed(1)+' / '+(hydGoal()/1000).toFixed(1)+' L')}${ring(Math.min(1,h.sl/B.sleep),'#8a63f5','Sleep',fm(h.sl))}</div></div>
+<div class="card c5"><div class="row sp"><h3>🌍 Your environment</h3><span class="mu">Demo data</span></div><div class="big">${e.t}°C <small>feels like ${e.fl}°C</small></div><div class="row" style="margin:8px 0"><span class="chip">AQI ${e.aqi}</span><span class="chip">Humidity ${e.hu}%</span><span class="chip">Wind ${e.w} km/h</span><span class="chip">☀️ ${e.wx}</span></div><div class="row sp" style="margin:10px 0">${fc}</div><button class="btn sec" onclick="go('env')">View environment →</button></div>
+<div class="card c7"><div class="row sp"><h3>🏥 Nearest care</h3><span class="mu">Demo locations</span></div>${nearest(5).map(n=>`<button class="tg" style="width:100%;background:none;border:0;border-bottom:1px solid var(--bd);text-align:left" onclick="S.sel='${n.n.replace(/'/g,"\\'")}';go('env')"><span>${ICO[n.t]} <b>${n.n}</b></span><span class="mu">${n.d} km</span></button>`).join('')}<button class="btn gh" onclick="go('env')">See all ${PL.length} on map →</button></div>
+<div class="card c7"><h3>Steps this week</h3><svg viewBox="0 0 290 120" class="ch" role="img" aria-label="Steps over the last 7 days"><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7aa2ff"/><stop offset="1" stop-color="#2456f5"/></linearGradient></defs>${bars}<line x1="0" x2="290" y1="${95-stGoal()/mx*80}" y2="${95-stGoal()/mx*80}" stroke="#12905a" stroke-dasharray="4 4"/></svg><div class="mu">Dashed line: your daily goal (${stGoal().toLocaleString()} steps). Synthetic demo history.</div></div>
+<div class="card c5"><h3>Suggestions for now</h3>${TIPS[r.t].map(t=>`<div class="tg"><span>✦ ${t}</span></div>`).join('')}</div>
+<div class="card c7"><h3>Recent alerts</h3>${alerts().slice(0,3).map(al=>`<button class="tg" style="width:100%;background:none;border:0;border-bottom:1px solid var(--bd);text-align:left" onclick="alertD('${al.k}')"><span>${SEV[al.sev][0]} <b>${al.title}</b><br><span class="mu">${al.time}</span></span><span class="mu">${al.status}</span></button>`).join('')}</div>
+<div class="card c5"><h3>⌚ Wearable</h3>${S.wear?'<p class="mu">Using demo data. No real device is connected.</p>':'<p class="mu">Not connected. Connect a supported device to import more health measurements.</p><div class="row"><button class="btn" onclick="toast(\'No device support in this prototype\')">Connect device</button><button class="btn sec" onclick="S.wear=1;render()">Use demo data</button></div>'}</div></div>`}
+function why(){const r=risk();sheet(`<div class="row sp"><h2>${r.title}</h2>${x}</div><p>${sv(r.sev)} · confidence ${Math.round(r.conf*100)}%</p>${r.t==='none'?'<p>No unusual pattern was found. Your readings are close to your own recent baseline.</p>':`<h3>Contributing signals</h3>${r.why.map(w=>`<div class="tg"><div><b>${w[0]}</b><div class="mu">${w[1]}</div></div></div>`).join('')}<p>💡 ${r.pre}</p>`}<p class="mu">This is a possible-risk indicator from prototype rules, not a diagnosis. If you feel unwell, consider seeking professional help.</p>`)}
+function detail(k){const m=M()[k],ri=S.range,d=series(k,ri),lab=m.dy?['7 days','14 days','30 days']:['24 hours','7 days','30 days'],avg=d.reduce((a,b)=>a+b)/d.length,tr=d[d.length-1]-d[0];
+const rec=d.slice(-5).reverse();
+sheet(`<div class="row sp"><h2>${m.i} ${m.l}</h2>${x}</div><div class="big">${m.f(m.v)} <small>${m.u}</small></div><div class="sev">${m.st}</div>
+<div class="tabs" style="margin:12px 0" role="tablist">${lab.map((l,i)=>`<button role="tab" aria-selected="${i===ri}" class="${i===ri?'on':''}" onclick="S.range=${i};detail('${k}')">${l}</button>`).join('')}</div>
+<div class="card" id="chart" data-k="${k}"><div class="mu" id="rd" aria-live="polite">Touch the chart to read values</div>${line(d,'var(--pr)')}</div>
+<div class="grid g2" style="margin-top:12px;grid-template-columns:repeat(3,1fr)"><div class="card"><div class="mu">Average</div><b>${m.f(avg)}</b></div><div class="card"><div class="mu">Min</div><b>${m.f(Math.min(...d))}</b></div><div class="card"><div class="mu">Max</div><b>${m.f(Math.max(...d))}</b></div></div>
+<p>Trend: <b>${Math.abs(tr)<(m.a||1)*.5?'→ steady':tr>0?'↗ rising':'↘ falling'}</b> over the period. Your usual: ${m.f(m.us)} ${m.u}.</p><div class="card"><h3>Recent readings</h3>${rec.map((v,i)=>`<div class="tg"><span class="mu">${i===0?'Latest':i+' step'+(i>1?'s':'')+' ago'}</span><b>${m.f(v)} ${m.u}</b></div>`).join('')}</div>
+${k==='hyd'?`<button class="btn" style="margin-top:12px;width:100%" onclick="S.cur.h.hy+=250;toast('Added 250 mL');detail('hyd');render()">+ Add water (250 mL)</button><p class="mu">Hydration is your manually logged intake, not a body measurement.</p>`:''}<p class="mu">Synthetic demo history.</p>`)}
+addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.closest('#chart');if(!c)return;const sv=c.querySelector('svg'),r=sv.getBoundingClientRect(),d=series(c.dataset.k,S.range),i=Math.max(0,Math.min(d.length-1,Math.round((e.clientX-r.left)/r.width*(d.length-1))));$('#rd').textContent=`Reading ${i+1} of ${d.length}: ${M()[c.dataset.k].f(d[i])} ${M()[c.dataset.k].u}`});
+
+function pick(i){S.sel=PL[i].n;render()}
+function pEnv(){const r=risk(),{e}=S.cur,cat=e.aqi<=50?'Good':e.aqi<=100?'Moderate':e.aqi<=150?'Unhealthy for sensitive groups':'Unhealthy',hl=SC[S.sc].hl;
+const vis=PL.filter(p=>S.mf[p.t]).sort((a,b)=>a.d-b.d),sel=PL.find(p=>p.n===S.sel);
+const mk=vis.map(p=>{const i=PL.indexOf(p),on=sel&&sel.n===p.n;return`<g class="mk" tabindex="0" role="button" aria-label="${esc(p.n)}, ${p.d} km" onclick="pick(${i})" onkeydown="if(event.key==='Enter')pick(${i})">${hl===p.t?`<circle cx="${p.x}" cy="${p.y}" r="21" fill="none" stroke="#cf2f2f" stroke-width="2" opacity=".5"/>`:''}<circle cx="${p.x}" cy="${p.y}" r="${on?17:13}" fill="#fff" stroke="${on?'#cf2f2f':'#2456f5'}" stroke-width="2.5"/><text x="${p.x}" y="${p.y+5}" font-size="14" text-anchor="middle">${ICO[p.t]}</text></g>`}).join('');
+const fc=[0,1,1,2,1,0].map((o,i)=>`<div style="text-align:center"><div class="mu">${i?'+'+i+'h':'Now'}</div><b>${e.t+o}°</b></div>`).join('');
+return`<div class="top"><div><h2>🌍 Environment & Map</h2><div class="mu">${esc(S.prof.city)} · ${PL.length} demo facilities within 3.5 km</div></div><span class="pill">DEMO DATA</span></div>
+<div class="grid two"><div><div class="row" style="margin-bottom:10px">${['hospital','pharmacy','emergency'].map(t=>`<button class="btn ${S.mf[t]?'':'sec'}" aria-pressed="${!!S.mf[t]}" onclick="S.mf.${t}=!S.mf.${t};render()">${ICO[t]} ${t[0].toUpperCase()+t.slice(1)}s (${PL.filter(p=>p.t===t).length})</button>`).join('')}</div>
+<div class="map"><svg viewBox="0 0 640 600" class="ch" role="img" aria-label="Demo map with nearby healthcare facilities"><g transform="translate(320 300) scale(${S.z}) translate(-320 -300)"><rect width="640" height="600" fill="#eaf2fb"/><rect x="30" y="40" width="150" height="110" rx="34" fill="#d9f0e0"/><rect x="450" y="390" width="150" height="130" rx="44" fill="#d9f0e0"/><rect x="60" y="440" width="120" height="90" rx="30" fill="#d9f0e0"/><path d="M0 210 C140 250 220 150 380 200 S560 250 640 190 L640 240 C560 300 420 250 380 250 S140 320 0 265Z" fill="#bcd9f5"/><g stroke="#fff" stroke-width="10" fill="none"><path d="M0 335H640M0 115H640M200 0V600M440 0V600M0 505Q320 420 640 520"/></g><g stroke="#d3dff0" stroke-width="3"><path d="M0 425H640M100 0V600M320 0V600M540 0V600M0 60H640"/></g><g fill="none" stroke="#8aa2c8" stroke-dasharray="4 6" stroke-width="1.5"><circle cx="320" cy="300" r="91"/><circle cx="320" cy="300" r="182"/><circle cx="320" cy="300" r="273"/></g><g font-size="11" fill="#5f6c8a"><text x="326" y="206">1 km</text><text x="326" y="115">2 km</text><text x="326" y="24">3 km</text><text x="50" y="100">Green Park</text><text x="468" y="460">Lake Park</text><text x="270" y="228">River</text></g>${sel?`<line x1="320" y1="300" x2="${sel.x}" y2="${sel.y}" stroke="#2456f5" stroke-width="3" stroke-dasharray="7 6"/>`:''}${mk}<circle cx="320" cy="300" r="18" fill="#2456f5" opacity=".2"/><circle cx="320" cy="300" r="7" fill="#2456f5" stroke="#fff" stroke-width="3"/></g></svg></div>
+<div class="row sp" style="margin-top:8px"><div class="row"><button class="ib" aria-label="Zoom in" onclick="S.z=Math.min(2.6,S.z+.4);render()">＋</button><button class="ib" aria-label="Zoom out" onclick="S.z=Math.max(1,S.z-.4);render()">－</button><button class="ib" aria-label="Reset view" onclick="S.z=1;S.sel=null;render()">◎</button></div><span class="mu">📍 You · demo locations, not real facilities</span></div>
+${sel?`<div class="card" style="margin-top:10px"><h3>${ICO[sel.t]} ${esc(sel.n)}</h3><div class="mu">${sel.d} km away · demo location, no live availability data</div><div class="row" style="margin-top:10px"><button class="btn" onclick="toast('Demo only: connect a map provider for directions')">Directions</button><button class="btn sec" onclick="toast('Demo only: no live details')">Details</button></div></div>`:''}
+<div class="card list" style="margin-top:10px"><h3>Nearby facilities</h3>${vis.map(p=>`<button class="tg" style="width:100%;background:none;border:0;border-bottom:1px solid var(--bd);text-align:left" onclick="pick(${PL.indexOf(p)})"><span>${ICO[p.t]} <b>${esc(p.n)}</b></span><span class="mu">${p.d} km</span></button>`).join('')}</div></div>
+<div class="grid" style="align-content:start"><div class="card"><div class="mu">Current environment · demo</div><div class="big">${e.t}°C <small>feels like ${e.fl}°C</small></div><div class="row" style="margin:8px 0"><span class="chip">Humidity ${e.hu}%</span><span class="chip">Wind ${e.w} km/h</span><span class="chip">UV ${e.uv}</span><span class="chip">${e.wx}</span></div><div class="big">AQI ${e.aqi} <small>${cat} · PM2.5 ${e.pm}</small></div></div>
+<div class="card"><h3>Next hours · demo forecast</h3><div class="row sp">${fc}</div></div>
+<div class="card"><h3>Environmental risk</h3>${[['🌡 Heat',r.ind[1][2],r.ind[1][3]],['🌫 Air',r.ind[2][2],r.ind[2][3]],['🌊 Flood',r.ind[4][2],r.ind[4][3]]].map(a=>`<div class="tg"><span>${a[0]}</span><span class="sev s-${a[1]==='na'?'na':a[1]}">${a[1]==='na'?'⚪':SEV[a[1]][0]} ${a[2]}</span></div>`).join('')}</div></div></div>`}
+function alertD(k){const a=alerts().find(z=>z.k===k);if(!a)return;sheet(`<div class="row sp"><h2>${SEV[a.sev][0]} ${a.title}</h2>${x}</div><p class="mu">${a.time} · ${a.status==='active'?'Active':a.status==='dismissed'?'Dismissed':'Resolved'}</p><h3>What happened</h3><p>${a.why}</p><h3>Recommended precaution</h3><p>${a.pre}</p>${a.status==='active'?`<div class="row"><button class="btn" onclick="why()">View analysis</button><button class="btn sec" onclick="S.dis['${a.k}']=1;closeS();render();toast('Alert dismissed')">Dismiss</button></div>`:''}<p class="mu">A risk indicator, not a diagnosis.</p>`)}
+function pRisk(){const r=risk(),o=r.sev;return`<div class="top"><div><h2>🚨 Risk center</h2><div class="mu">Risk indicators, not diagnoses</div></div><span class="pill">DEMO MODE</span></div>
+<div class="card dk" style="margin-bottom:14px"><div class="mu">Current risk</div><div class="big">${SEV[o][0]} ${SEV[o][1].toUpperCase()}</div><p style="margin:6px 0 0">${r.t==='none'?'No immediate warning detected.':r.ai}</p></div>
+<div class="grid g2 g3d">${r.ind.map(i=>`<div class="card"><div class="mu">${i[0]} ${i[1]}</div><div class="sev s-${i[2]==='na'?'na':i[2]}">${i[2]==='na'?'⚪':SEV[i[2]][0]} ${i[3]}</div></div>`).join('')}</div>
+<h3 style="margin:20px 0 8px">Alert history</h3><div class="card">${alerts().map(a=>`<button class="tg" style="width:100%;background:none;border:0;border-bottom:1px solid var(--bd);text-align:left" onclick="alertD('${a.k}')"><span>${SEV[a.sev][0]} <b>${a.title}</b><br><span class="mu">${a.time}</span></span><span class="sev">${a.status}</span></button>`).join('')}</div>`}
+function pProf(){const p=S.prof;const f=(k,l,t='text')=>`<label for="f_${k}">${l}</label><input id="f_${k}" type="${t}" value="${esc(p[k])}"><div class="er" id="e_${k}"></div>`;
+const sel=(k,l,o)=>`<label for="f_${k}">${l}</label><select id="f_${k}">${o.map(v=>`<option ${v===p[k]?'selected':''}>${v}</option>`).join('')}</select>`;
+return`<div class="top"><div><h2>👤 My profile</h2><div class="mu">Changes appear on your dashboard when you save</div></div><button class="ib" onclick="go('set')" aria-label="Settings and privacy">⚙️</button></div>
+<div class="grid two"><div class="card"><h3>Personal</h3>${f('name','Name')}${f('age','Age','number')}${sel('sex','Sex',['Female','Male','Other','Prefer not to say'])}${f('city','Area / city')}${sel('work','Work type',['Indoor','Outdoor','Mixed'])}<h3 style="margin-top:14px">Body & lifestyle</h3>${f('height','Height (cm)','number')}${f('weight','Weight (kg)','number')}${sel('act','Activity level',['Low','Moderate','High'])}${sel('sleepH','Usual sleep (hours)',['6','7','7.5','8','9'])}<h3 style="margin-top:14px">Emergency</h3>${f('ec','Emergency contact')}${f('ep','Contact phone','tel')}<div class="row" style="margin-top:12px"><button class="btn" onclick="saveP()">Save changes</button><button class="btn sec" onclick="render()">Cancel</button></div></div>
+<div class="card" style="align-self:start"><h3>Connected devices</h3><div class="tg"><span>📱 Phone</span><span class="mu">Demo data</span></div><div class="tg"><span>⌚ Wearable</span><span class="mu">${S.wear?'Demo data':'Not connected'}</span></div></div></div>`}
+function vld(g,keys){const er={};if(keys.includes('name')&&(!g('name')||g('name').length>40))er.name='Enter a name (up to 40 characters).';if(keys.includes('age')){const a=+g('age');if(!(a>=13&&a<=110))er.age='Enter an age between 13 and 110.'}
+if(keys.includes('city')&&!g('city'))er.city='Enter your area or city.';if(keys.includes('height')&&!(+g('height')>=100&&+g('height')<=230))er.height='Enter a height between 100 and 230 cm.';if(keys.includes('weight')&&!(+g('weight')>=25&&+g('weight')<=250))er.weight='Enter a weight between 25 and 250 kg.';
+if(keys.includes('ep')&&g('ep')&&!/^[+\d][\d\s()-]{6,}$/.test(g('ep')))er.ep='Enter a valid phone number.';return er}
+function showEr(er){document.querySelectorAll('.er').forEach(n=>n.textContent='');const ks=Object.keys(er);ks.forEach(k=>{const n=$('#e_'+k);n&&(n.textContent=er[k])});if(ks.length){const i=document.querySelector('[id$="_'+ks[0]+'"]');i&&i.focus()}return ks.length}
+function saveP(){const g=k=>$('#f_'+k).value.trim();if(showEr(vld(g,['name','age','city','height','weight','ep'])))return;
+['name','age','sex','city','work','height','weight','act','sleepH','ec','ep'].forEach(k=>S.prof[k]=g(k));applyProf();toast('Profile updated successfully.');render()}
+/* ---------- onboarding ---------- */
+function oi(k,v,r){S.prof[k]=v;applyProf();if(r)render();else{const n=$('#pv');n&&(n.innerHTML=pv())}}
+function pv(){const p=S.prof,b=bmi();return`<div class="card"><div class="mu">Live dashboard preview</div><div class="row" style="margin:10px 0;flex-wrap:nowrap"><div class="av">${esc((p.name||'?')[0].toUpperCase())}</div><div><h3 style="margin:0">Good morning, ${esc(p.name||'there')} 👋</h3><div class="mu">${p.age?esc(p.age)+' yrs':'Age'} · ${esc(p.sex||'Sex')} · ${esc(p.city||'Location')}</div></div></div><div class="row"><span class="chip">📏 ${esc(p.height||'—')} cm</span><span class="chip">⚖️ ${esc(p.weight||'—')} kg</span><span class="chip">BMI ${b?b.toFixed(1):'—'}</span><span class="chip">😴 ${p.sleepH} h</span><span class="chip">🏃 ${p.act}</span><span class="chip">💼 ${p.work}</span></div>${b?`<p class="mu" style="margin:10px 0 0">BMI is ${bmiC(b)}. It is a rough guide, not a health assessment.</p>`:''}<div class="mu" style="margin-top:10px">Nearby care will be shown around ${esc(p.city||'your area')} (demo).</div></div>`}
+function pOnb(){const p=S.prof,s=S.onb;
+const T=[['Let’s start with you','Tell us a little so your dashboard feels personal.'],['Where you are','Used for local weather, air quality and nearby care.'],['Body and lifestyle','Used to tailor goals and compare you with your own baseline.'],['Safety and privacy','Optional. You can change any of this later.']];
+const fi=(k,l,t='text',ph='')=>`<label for="o_${k}">${l}</label><input id="o_${k}" type="${t}" value="${esc(p[k])}" placeholder="${ph}" oninput="oi('${k}',this.value)"><div class="er" id="e_${k}"></div>`;
+const seg=(k,o,suf='')=>`<div class="seg" role="radiogroup">${o.map(v=>`<button class="btn ${p[k]===v?'':'sec'}" role="radio" aria-checked="${p[k]===v}" onclick="oi('${k}','${v}',1)">${v}${suf}</button>`).join('')}</div><div class="er" id="e_${k}"></div>`;
+const tg=(k,l,d)=>`<div class="tg"><div><b>${l}</b><div class="mu">${d}</div></div><button class="sw" role="switch" aria-checked="${!!S.set[k]}" aria-label="${l}" onclick="S.set.${k}=+!S.set.${k};render()"></button></div>`;
+const B4=[`${fi('name','Your name','text','e.g. Alex')}${fi('age','Age','number','e.g. 34')}<label>Sex</label>${seg('sex',['Female','Male','Other','Prefer not to say'])}`,
+`${fi('city','Area / city','text','e.g. Riverside')}<label>Work type</label>${seg('work',['Indoor','Outdoor','Mixed'])}`,
+`${fi('height','Height (cm)','number','e.g. 170')}${fi('weight','Weight (kg)','number','e.g. 65')}<label>Activity level</label>${seg('act',['Low','Moderate','High'])}<label>Usual sleep</label>${seg('sleepH',['6','7','7.5','8','9'],' h')}`,
+`${fi('ec','Emergency contact (optional)','text','Name')}${fi('ep','Contact phone (optional)','tel','+1 555 0100')}${tg('loc','Location','For local weather and nearby care.')}${tg('notif','Notifications','For risk alerts.')}`];
+return`<div class="ob"><div style="position:relative"><svg viewBox="0 0 200 200" width="120" aria-hidden="true" style="position:absolute;right:0;top:-10px;opacity:.9"><path d="M100 20C130 20 170 50 170 100C170 150 130 180 100 180C60 180 30 150 30 100C30 50 70 20 100 20Z" fill="#ffd9ea"/><path d="M100 50C120 50 145 70 145 100C145 130 120 150 100 150C80 150 55 130 55 100C55 70 80 50 100 50Z" fill="#d6e4ff"/></svg>
+<span class="pill">🩺 Smart Health Companion</span><h2 style="font-size:32px;margin:14px 0 4px">${T[s][0]}</h2><p class="mu" style="margin:0">${T[s][1]}</p><div class="prog" aria-label="Step ${s+1} of 4">${[0,1,2,3].map(i=>`<i class="${i<=s?'on':''}"></i>`).join('')}</div>
+<div class="card">${B4[s]}<div class="row sp" style="margin-top:16px">${s>0?'<button class="btn sec" onclick="S.onb--;render()">Back</button>':'<span></span>'}<button class="btn" onclick="nextOnb()">${s<3?'Continue':'Open my dashboard'}</button></div></div></div>
+<div id="pv">${pv()}</div></div>`}
+function nextOnb(){const s=S.onb,g=k=>$('#o_'+k)?$('#o_'+k).value.trim():S.prof[k];const K=[['name','age'],['city'],['height','weight'],['ep']],er=vld(g,K[s]);if(s===0&&!S.prof.sex)er.sex='Choose an option.';if(showEr(er))return;
+if(s<3){S.onb++;render();scrollTo(0,0)}else{S.prof.done=true;S.page='dash';render();scrollTo(0,0);toast('Welcome, '+S.prof.name+'. Your dashboard is ready.')}}
+function pSet(){const T=[['health','Health data','Used to display health measurements and generate personalized insights.'],['loc','Location','Used to provide local weather, environmental information and nearby healthcare facilities.'],['notif','Notifications','Used to send risk alerts.'],['ai','AI processing','Lets the AI layer explain structured risk results. It never receives raw personal details.'],['hist','Location history','Keeps past locations. Off by default.']];
+return`<div class="top"><div><h2>⚙️ Settings & privacy</h2></div><button class="btn sec" onclick="go('prof')">← Profile</button></div>
+<div class="grid two"><div class="card"><h3>🔐 Privacy center</h3><p>Your health data belongs to you.</p>${T.map(t=>`<div class="tg"><div><b>${t[1]}</b><div class="mu">${t[2]}</div></div><button class="sw" role="switch" aria-checked="${!!S.set[t[0]]}" aria-label="${t[1]}" onclick="S.set.${t[0]}=+!S.set.${t[0]};render()"></button></div>`).join('')}<p class="mu">This prototype stores nothing on a server and does not claim encryption.</p></div>
+<div class="grid" style="align-content:start"><div class="card"><h3>Account</h3><div class="tg"><span>Profile</span><button class="btn gh" onclick="go('prof')">Edit</button></div><div class="tg"><span>Authentication</span><span class="mu">Not enabled in demo</span></div></div>
+<div class="card"><h3>Appearance</h3><div class="row"><button class="btn sec" onclick="document.documentElement.dataset.theme='light'">Light</button><button class="btn sec" onclick="document.documentElement.dataset.theme='dark'">Dark</button></div></div>
+<div class="card"><h3>About</h3><p class="mu">Smart Health Companion is a wellness prototype. It shows possible risk indicators from simulated data and is not a medical device or diagnosis.</p><button class="btn dg" onclick="sheet('<h2>Delete account?</h2><p>Demo only: nothing is stored, so nothing is deleted.</p><button class=&quot;btn&quot; onclick=&quot;closeS()&quot;>Got it</button>')">Delete account</button></div></div></div>`}
+
+/* ---------- demo control + simulation ---------- */
+function demoOpen(){sheet(`<div class="row sp"><h2>🎛 Demo control</h2>${x}</div><p class="mu">Current mode: <b>Demo data</b> · ${SC[S.sc].n}</p>${Object.keys(SC).map(k=>`<label class="tg" style="cursor:pointer"><span>${SC[k].i} ${SC[k].n}</span><input type="radio" name="sc" value="${k}" style="width:auto" ${k===S.sc?'checked':''}></label>`).join('')}
+<div class="row" style="margin-top:14px"><button class="btn" onclick="runSc(document.querySelector('input[name=sc]:checked').value)">Run scenario</button><button class="btn sec" onclick="runSim()">Run timeline simulation</button></div>`)}
+function runSc(id){clearTimeout(S.tm);S.sim=null;load(id);S.dis={};S.fdis={};S.faK=null;S.busy=true;closeS();go('dash');setTimeout(()=>{S.busy=false;render()},700)}
+function runSim(){clearTimeout(S.tm);load('normal');S.dis={};S.fdis={};S.faK=null;closeS();S.page='dash';const h=()=>S.cur.h,e=()=>S.cur.e;
+const st=[['Normal day',0,()=>{}],['Activity increases',0,()=>{h().act='High';h().st=8600}],['Environmental temperature rises',0,()=>{Object.assign(e(),{t:36,fl:41,hu:78,uv:'High',wx:'Hot and humid',ex:3.5})}],['Heart rate changes',1,()=>{Object.assign(h(),{hr:112,rhr:78,t:37.6,spo2:96,st:9800})}],['Hydration decreases',1,()=>{h().hy=900}],['Risk engine detects a pattern',2,()=>{}],['Alert generated',4,()=>{S.sc='heat'}],['AI explains and shows a precaution',3,()=>{S.busy=true;setTimeout(()=>{S.busy=false;render()},800)}]];
+let i=0;(function n(){st[i][2]();S.sim={l:st[i][0],p:st[i][1],i};render();scrollTo(0,0);if(++i<st.length)S.tm=setTimeout(n,2200);else S.tm=setTimeout(()=>{S.sim=null;render()},3500)})()}
+
+function faRender(){const r=risk(),k=r.t+S.sc,el=$('#fa');const show=S.prof.done&&r.t!=='none'&&!S.fdis[k]&&(!S.sim||S.sim.i>=6);if(!show){el.innerHTML='';S.faK=null;return}if(S.faK===k)return;S.faK=k;
+const n=nearest(1,'hospital')[0],h=S.cur.h;el.innerHTML=`<div class="card fa" role="alert"><div class="row sp" style="flex-wrap:nowrap"><b>⚠️ ${r.title} · ${SEV[r.sev][1]}</b><button class="btn gh" onclick="fdis()" aria-label="Dismiss alert">✕</button></div><div class="mu" style="margin:4px 0">Health condition: ❤️ ${Math.round(h.hr)} BPM · 🌡 ${h.t}°C · 🫁 ${h.spo2}% · ${r.f.slice(0,2).join(', ')||'signals changed'}</div><div>🏥 Nearest hospital: <b>${esc(n.n)}</b> · ${n.d} km <span class="mu">(demo)</span></div><div class="row" style="margin-top:10px"><button class="btn" onclick="toast('Demo only: connect a map provider for directions')">Directions</button><button class="btn sec" onclick="S.sel='${n.n.replace(/'/g,"\\'")}';fdis();go('env')">View on map</button><button class="btn sec" onclick="fdis();why()">Why?</button></div><div class="mu" style="margin-top:6px">A possible-risk indicator, not a diagnosis.</div></div>`}
+function fdis(){S.fdis[risk().t+S.sc]=1;S.faK=null;$('#fa').innerHTML=''}
+function render(){const p=S.page,ob=!S.prof.done;document.body.classList.toggle('onb',ob);if(ob){$('#main').innerHTML=pOnb();$('#fa').innerHTML='';S.faK=null;return}
+$('#side').innerHTML=`<h1>SMART HEALTH<br>COMPANION</h1>`+NAV.map(n=>`<button class="nb ${p===n[0]?'on':''}" onclick="go('${n[0]}')" ${p===n[0]?'aria-current="page"':''}>${n[1]} ${n[2]}</button>`).join('')+`<div style="flex:1"></div><button class="nb ${p==='set'?'on':''}" onclick="go('set')">⚙️ Settings</button>`;
+$('#bt').innerHTML=NAV.map(n=>`<button class="${p===n[0]||(p==='set'&&n[0]==='prof')?'on':''}" onclick="go('${n[0]}')" ${p===n[0]?'aria-current="page"':''}><span style="font-size:20px">${n[1]}</span>${n[3]}</button>`).join('');
+$('#main').innerHTML=({dash:pDash,env:pEnv,risk:pRisk,prof:pProf,set:pSet})[p]();faRender()}
+render();
+</script></body></html>
