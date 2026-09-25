@@ -4,7 +4,7 @@ A polished, interactive HealthTech prototype that combines simulated phone/weara
 
 **This is a demo/prototype. It is not a medical device and does not diagnose anything.**
 
-🔗 Live demo: https://claude.ai/artifact/2iyL17e2eT5fbep1kdo1Uw
+🔗 Live demo: https://obitorinai.github.io/Smart_heathcare/
 
 ---
 
@@ -82,5 +82,5 @@ This prototype intentionally avoids diagnostic language. It uses phrasing like "
 - Map drag-to-pan
 
 ## License
+M.I.T LICENSE 
 
-Add your preferred license here (e.g. MIT).
